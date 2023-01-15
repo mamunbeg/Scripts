@@ -14,7 +14,7 @@ Set-TimeZone "GMT Standard Time"
 # Configure DHCP network for WAN
 function dhcpassign {
     $IPType = "IPv4"
-    $adapter = Get-NetAdapter | ? {$_.Status -eq "up"}
+    $adapter = Get-NetAdapter | Where-Object {$_.Status -eq "up"}
     $interface = $adapter | Get-NetIPInterface -AddressFamily $IPType
     if ($interface.Dhcp -eq "Disabled") {
         # Remove existing gateway
@@ -30,7 +30,7 @@ function dhcpassign {
     
 # Configure static network for LAN
 function staticassign {
-    $IPdefault = "10.10.10.10"
+    $IPdefault = "10.0.50.10"
     if (!($IPvalue = Read-Host "Enter IP address to be set. [Default is $IPdefault]")) {
         $IPvalue = $IPdefault
     }
@@ -38,17 +38,17 @@ function staticassign {
     if (!($MaskBitsvalue = Read-Host "Enter Subnet Mask bit to be set. [Default is $MaskBitsdefault]")) {
         $MaskBitsvalue = $MaskBitsdefault
     }
-    $Gatewaydefault = "10.10.10.1"
+    $Gatewaydefault = "10.0.50.1"
     if (!($Gatewayvalue = Read-Host "Enter Gateway address to be set. [Default is $Gatewaydefault]")) {
         $Gatewayvalue = $Gatewaydefault
     }
-    $DNSdefault = "10.10.10.100"
+    $DNSdefault = "10.0.50.10"
     if (!($DNSvalue = Read-Host "Enter DNS server address to be set. [Default is $DNSdefault]")) {
         $DNSvalue = $DNSdefault
     }
     $IPType = "IPv4"
     # Retrieve the network adapter that you want to configure
-    $adapter = Get-NetAdapter | ? {$_.Status -eq "up"}
+    $adapter = Get-NetAdapter | Where-Object {$_.Status -eq "up"}
     # Remove any existing IP, gateway from our IPv4 adapter
     if (($adapter | Get-NetIPConfiguration).IPv4Address.IPAddress) {
         $adapter | Remove-NetIPAddress -AddressFamily $IPType -Confirm:$false
@@ -106,4 +106,4 @@ Install-WindowsFeature WDS
 Install-WindowsFeature UpdateServices
 
 # Confirm roles and features installed
-Get-WindowsFeature | Where-Object {$_. installstate -eq "installed"} | ft Name,Installstate
+Get-WindowsFeature | Where-Object {$_. installstate -eq "installed"} | Format-Table Name,Installstate
