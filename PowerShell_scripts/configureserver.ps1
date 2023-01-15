@@ -82,6 +82,8 @@ do {
 # Display network configuration
 Get-NetIPConfiguration
 
+msiexec /i WindowsAdminCenter*.msi /qn /L*v log.txt SME_PORT=3443 SSL_CERTIFICATE_OPTION=generate
+
 # Enable firewall
 Set-NetFirewallProfile   -Profile Domain,Private,Public -Enabled True
 
@@ -89,26 +91,28 @@ Set-NetFirewallProfile   -Profile Domain,Private,Public -Enabled True
 Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
 
 # Enable firewall rules for remote management
-Enable-NetFireWallRule -DisplayName "Windows Management Instrumentation (DCOM-In)"
 Enable-NetFirewallRule -DisplayGroup "Windows Remote Management"
 Enable-NetFireWallRule -DisplayGroup "Remote Event Log Management"
 Enable-NetFireWallRule -DisplayGroup "Remote Service Management"
 Enable-NetFireWallRule -DisplayGroup "Remote Volume Management"
 Enable-NetFireWallRule -DisplayGroup "Remote Scheduled Tasks Management"
+Enable-NetFireWallRule -DisplayName "Windows Management Instrumentation (DCOM-In)"
+New-NetFirewallRule -DisplayName "Windows Admin Center" -Direction Inbound -Action Allow -EdgeTraversalPolicy Allow -Protocol TCP -LocalPort 3443
 
 # Install roles and features
-Install-WindowsFeature DHCP
-Install-WindowsFeature DNS
-Install-WindowsFeature AD-Domain-Services
-Install-WindowsFeature GPMC
-Install-WindowsFeature Print-Server
-Install-WindowsFeature WDS
-Install-WindowsFeature UpdateServices
+Install-WindowsFeature DHCP -IncludeManagementTools
+Install-WindowsFeature DNS -IncludeManagementTools
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+Install-WindowsFeature GPMC -IncludeManagementTools
+Install-WindowsFeature Print-Server -IncludeManagementTools
+Install-WindowsFeature WDS -IncludeManagementTools
+Install-WindowsFeature UpdateServices -IncludeManagementTools
 
 # Confirm roles and features installed
 Get-WindowsFeature | Where-Object {$_. installstate -eq "installed"} | Format-Table Name,Installstate
 
 # Choose setup new domain or add to existing domain
+Get-Command -Module ADDSDeployment
 do {
     $domain = Read-Host `n"Enter the domain for your server"
     $netbios = Read-Host `n"Enter the NETBIOS domain for your server"
