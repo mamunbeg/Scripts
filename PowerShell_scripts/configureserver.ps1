@@ -107,3 +107,23 @@ Install-WindowsFeature UpdateServices
 
 # Confirm roles and features installed
 Get-WindowsFeature | Where-Object {$_. installstate -eq "installed"} | Format-Table Name,Installstate
+
+# Choose setup new domain or add to existing domain
+do {
+    $domain = Read-Host `n"Enter the domain for your server"
+    $netbios = Read-Host `n"Enter the NETBIOS domain for your server"
+    Write-Host `n"Do you want to set up a new domain on the server or add the server to an existing domain?"
+    $setdomain = Read-Host -Prompt `n"1. New domain:`n2. Existing domain"
+    if ($setdomain -eq 1) {
+        Install-ADDSForest -DomainName $domain -DomainNetbiosName $netbios -InstallDns:$true
+    }
+    elseif ($setdomain -eq 2) {
+        Install-ADDSDomainController -DomainName $domain -InstallDns -Credential (get-credential $netbios\Administrator)
+    }
+    else {
+        Write-Host `n "Invalid entry" `n
+    }    
+} until (
+    ($setdomain -eq 1) -or ($setdomain -eq 2)
+)
+
