@@ -62,10 +62,10 @@ if (Test-Path "$apppath\MSPUB.EXE") {
       $Shortcut.Save()
 }
 
-# Skype fo Business
+# Skype for Business
 if (Test-Path "$apppath\lync.exe") {
       $WshShell = New-Object -comObject WScript.Shell
-      $Shortcut = $WshShell.CreateShortcut("$linkpath\Skype fo Business.lnk")
+      $Shortcut = $WshShell.CreateShortcut("$linkpath\Skype for Business.lnk")
       $Shortcut.TargetPath = "$apppath\lync.exe"
       $Shortcut.Save()
 }
@@ -89,5 +89,13 @@ if (Test-Path "$apppath\msoev.exe") {
       $WshShell = New-Object -comObject WScript.Shell
       $Shortcut = $WshShell.CreateShortcut("$toolspath\Telemetry Log for Office.lnk")
       $Shortcut.TargetPath = "$apppath\msoev.exe"
+      $Shortcut.Save()
+}
+
+# Skype for Business Recording Manager
+if (Test-Path "$apppath\OcPubMgr.exe") {
+      $WshShell = New-Object -comObject WScript.Shell
+      $Shortcut = $WshShell.CreateShortcut("$toolspath\Skype for Business Recording Manager.lnk")
+      $Shortcut.TargetPath = "$apppath\OcPubMgr.exe"
       $Shortcut.Save()
 }
