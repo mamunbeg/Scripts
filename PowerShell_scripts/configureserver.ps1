@@ -11,7 +11,7 @@ Set-WinSystemLocale en-GB
 #Set the timezone
 Set-TimeZone "GMT Standard Time"
 
-# Configure DHCP network for WAN
+# Configure DHCP network for NIC
 function dhcpassign {
     $IPType = "IPv4"
     $adapter = Get-NetAdapter | Where-Object {$_.Status -eq "up"}
@@ -28,7 +28,7 @@ function dhcpassign {
     }
 }
     
-# Configure static network for LAN
+# Configure static network for NIC
 function staticassign {
     $IPdefault = "10.0.50.10"
     if (!($IPvalue = Read-Host "Enter IP address to be set. [Default is $IPdefault]")) {
@@ -62,22 +62,30 @@ function staticassign {
     $adapter | Set-DnsClientServerAddress -ServerAddresses $DNSvalue
 }
 
-# Choose static or DHCP assignment of IP
-do {
-    Write-Host `n"How do you want to assign an IP address - DHCP or static?"
-    $ipassign = Read-Host -Prompt `n"1. DHCP:`n2. Static"
-    if ($ipassign -eq 1) {
-        dhcpassign
-    }
-    elseif ($ipassign -eq 2) {
-        staticassign
-    }
-    else {
-        Write-Host `n "Invalid entry" `n
-    }    
-} until (
-    ($ipassign -eq 1) -or ($ipassign -eq 2)
-)
+# Rename NICs
+Get-NetAdapter | Where-Object {$_.Name -eq "Ethernet"} | Rename-NetAdapter -NewName "LAN"
+Get-NetAdapter | Where-Object {$_.Name -eq "Ethernet 2"} | Rename-NetAdapter -NewName "MGMT"
+
+$niclist = Get-NetAdapter | Where-Object {$_.PhysicalMediaType -like "*802*"}
+foreach ($nicitem in $niclist) {
+    # Choose static or DHCP assignment of IP
+    do {
+        $nicname = $nicitem.Name
+        Write-Host `n"How do you want to assign an IP address for $nicname - DHCP or static?"
+        $ipassign = Read-Host -Prompt `n"1. DHCP:`n2. Static"
+        if ($ipassign -eq 1) {
+            dhcpassign
+        }
+        elseif ($ipassign -eq 2) {
+            staticassign
+        }
+        else {
+            Write-Host `n "Invalid entry" `n
+        }    
+    } until (
+        ($ipassign -eq 1) -or ($ipassign -eq 2)
+    )
+}
 
 # Display network configuration
 Get-NetIPConfiguration
