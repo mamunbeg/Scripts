@@ -2,10 +2,11 @@
 
 # Set working paths
 $apppath = "C:\Program Files\Microsoft Office\root\Office16"
-$linkpath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs"
-$toolspath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office Tools"
-If(!(test-path -PathType container $toolspath))
-{
+# $linkpath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs"
+# $toolspath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office Tools"
+$linkpath = "C:\Users\Public\Desktop"
+$toolspath = "C:\Users\Public\Desktop\Microsoft Office Tools"
+if (!(test-path -PathType container $toolspath)) {
       New-Item -ItemType Directory -Path $toolspath
 }
 
@@ -63,15 +64,15 @@ $Shortcut.TargetPath = "$apppath\msoev.exe"
 $Shortcut.Save()
 
 # Database Compare
-Test-Path "C:\Program Files\Microsoft Office\root\Client\AppVLP.exe" "C:\Program Files (x86)\Microsoft Office\Office16\DCF\DATABASECOMPARE.EXE"
+Test-Path "C:\Program Files\Microsoft Office\root\Client\AppVLP.exe"
 $WshShell = New-Object -comObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut("$toolspath\Database Compare.lnk")
-$Shortcut.TargetPath = "C:\Program Files\Microsoft Office\root\Client\AppVLP.exe" "C:\Program Files (x86)\Microsoft Office\Office16\DCF\DATABASECOMPARE.EXE"
+$Shortcut.TargetPath = `"C:\Program Files\Microsoft Office\root\Client\AppVLP.exe`" `"C:\Program Files (x86)\Microsoft Office\Office16\DCF\DATABASECOMPARE.EXE`"
 $Shortcut.Save()
 
 # Spreadsheet Compare
-Test-Path "C:\Program Files\Microsoft Office\root\Client\AppVLP.exe" "C:\Program Files (x86)\Microsoft Office\Office16\DCF\SPREADSHEETCOMPARE.EXE"
+Test-Path "C:\Program Files\Microsoft Office\root\Client\AppVLP.exe"
 $WshShell = New-Object -comObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut("$toolspath\Spreadsheet Compare.lnk")
-$Shortcut.TargetPath = "C:\Program Files\Microsoft Office\root\Client\AppVLP.exe" "C:\Program Files (x86)\Microsoft Office\Office16\DCF\SPREADSHEETCOMPARE.EXE"
+$Shortcut.TargetPath = `"C:\Program Files\Microsoft Office\root\Client\AppVLP.exe`" `"C:\Program Files (x86)\Microsoft Office\Office16\DCF\SPREADSHEETCOMPARE.EXE`"
 $Shortcut.Save()
