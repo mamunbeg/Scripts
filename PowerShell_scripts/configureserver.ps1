@@ -11,9 +11,25 @@ Set-WinSystemLocale en-GB
 #Set the timezone
 Set-TimeZone "GMT Standard Time"
 
-
+# Confirm directory and change name
+do {
+    Write-Host `n"How do you want to assign an IP address - DHCP or static?"
+    $ipassign = Read-Host -Prompt `n"1. DHCP:`n2. Static"
+    if ($ipassign -eq 1) {
+        dhcpassign
+    }
+    elseif ($ipassign -eq 2) {
+        staticassign
+    }
+    else {
+        Write-Host `n "Invalid entry" `n
+    }    
+} until (
+    ($ipassign -eq 1) -or ($ipassign -eq 2)
+)
 
 # Configure DHCP network for WAN
+function dhcpassign {
 $IPType = "IPv4"
 $adapter = Get-NetAdapter | ? {$_.Status -eq "up"}
 $interface = $adapter | Get-NetIPInterface -AddressFamily $IPType
@@ -27,30 +43,37 @@ If ($interface.Dhcp -eq "Disabled") {
  # Configure the DNS Servers automatically
  $interface | Set-DnsClientServerAddress -ResetServerAddresses
 }
+}
 
 # Configure static network for LAN
-$IP = "10.10.10.10"
-$MaskBits = 24 # This means subnet mask = 255.255.255.0
-$Gateway = "10.10.10.1"
-$Dns = "10.10.10.100"
-$IPType = "IPv4"
-# Retrieve the network adapter that you want to configure
-$adapter = Get-NetAdapter | ? {$_.Status -eq "up"}
-# Remove any existing IP, gateway from our ipv4 adapter
-If (($adapter | Get-NetIPConfiguration).IPv4Address.IPAddress) {
- $adapter | Remove-NetIPAddress -AddressFamily $IPType -Confirm:$false
+function staticassign {
+    $IPdefault = "10.10.10.10"
+    if (!($IPvalue = Read-Host "Enter IP address to be set. [Default is $IPdefault]")) { $IPvalue = $IPdefault }
+    $MaskBitsdefault = 24 # This means subnet mask = 255.255.255.0
+    if (!($MaskBitsvalue = Read-Host "Enter Subnet Mask bit to be set. [Default is $MaskBitsdefault]")) { $MaskBitsvalue = $MaskBitsdefault }
+    $Gatewaydefault = "10.10.10.1"
+    if (!($Gatewayvalue = Read-Host "Enter Gateway address to be set. [Default is $Gatewaydefault]")) { $Gatewayvalue = $Gatewaydefault }
+    $DNSdefault = "10.10.10.100"
+    if (!($DNSvalue = Read-Host "Enter DNS server address to be set. [Default is $DNSdefault]")) { $DNSvalue = $DNSdefault }
+    $IPType = "IPv4"
+    # Retrieve the network adapter that you want to configure
+    $adapter = Get-NetAdapter | ? {$_.Status -eq "up"}
+    # Remove any existing IP, gateway from our ipv4 adapter
+    if (($adapter | Get-NetIPConfiguration).IPv4Address.IPAddress) {
+    $adapter | Remove-NetIPAddress -AddressFamily $IPType -Confirm:$false
+    }
+    if (($adapter | Get-NetIPConfiguration).Ipv4DefaultGateway) {
+    $adapter | Remove-NetRoute -AddressFamily $IPType -Confirm:$false
+    }
+    # Configure the IP address and default gateway
+    $adapter | New-NetIPAddress `
+    -AddressFamily $IPType `
+    -IPAddress $IPvalue `
+    -PrefixLength $MaskBitsvalue `
+    -DefaultGateway $Gatewayvalue
+    # Configure the DNS client server IP addresses
+    $adapter | Set-DnsClientServerAddress -ServerAddresses $DNSvalue
 }
-If (($adapter | Get-NetIPConfiguration).Ipv4DefaultGateway) {
- $adapter | Remove-NetRoute -AddressFamily $IPType -Confirm:$false
-}
- # Configure the IP address and default gateway
-$adapter | New-NetIPAddress `
- -AddressFamily $IPType `
- -IPAddress $IP `
- -PrefixLength $MaskBits `
- -DefaultGateway $Gateway
-# Configure the DNS client server IP addresses
-$adapter | Set-DnsClientServerAddress -ServerAddresses $DNS
 
 # Enable firewall
 Set-NetFirewallProfile   -Profile Domain,Private,Public -Enabled True
