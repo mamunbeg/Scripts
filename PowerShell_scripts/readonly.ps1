@@ -3,8 +3,8 @@ $username = 'j.smith'
 $folder = "C:\Example\Folder1"
 
 # step 1) get folder permissions
-$acl = get-acl $folder
-$groups = $acl.access.where({$_.filesystemrights -match "ReadAndExecute" -AND $_.IdentityReference -notmatch "BUILTIN" -AND $_.IdentityReference -notmatch "$env:COMPUTERNAME" })
+$acl = Get-Acl $folder
+$groups = $acl.Access.Where({$_.filesystemrights -match "ReadAndExecute" -AND $_.IdentityReference -notmatch "BUILTIN" -AND $_.IdentityReference -notmatch "$env:COMPUTERNAME" })
 
 # step 2) create group and set permission on folder if not exist
 if(!($groups)){
