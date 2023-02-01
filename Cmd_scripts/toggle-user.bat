@@ -4,7 +4,7 @@ echo This script will show/hide a selected user on the login screen
 echo.
 color 0b
 
-:: BatchGotAdmin
+:: BatchGetAdmin
 ::-------------------------------------
 REM  --> Check for permissions
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
@@ -53,16 +53,17 @@ echo.
 :selectuser
 set /p SelectUser=Enter username from above list to show/hide on login screen: 
 echo %UserList% |findstr /i "\<%SelectUser%\>" >nul 2>&1
-if %errorlevel% equ 1 (echo Username entered is not valid on this machine & pause & exit)
+if %errorlevel% equ 1 (echo Username entered is not valid on this machine & timeout /T 10 & exit)
 
 :showhide
 set ToggleList="1" "0"
 set /p Toggle=Enter "1" to show or "0" to hide %SelectUser% account: 
 echo %ToggleList% |findstr /i "\<%Toggle%\>" >nul 2>&1
-if %errorlevel% equ 1 (echo Value entered is not valid & pause & exit)
+if %errorlevel% equ 1 (echo Value entered is not valid & timeout /T 10 & exit)
 echo Will toggle user visibility on login screen now . . .
 
 :tweakregistry
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList" /v %SelectUser% /t REG_DWORD /d %Toggle%
 
+timeout /T 10
 exit
