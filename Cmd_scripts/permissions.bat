@@ -108,10 +108,10 @@ goto setperm
 
 :setperm
 echo Assigning permissions for %UserAssign%
-icacls %folderPath% %inheritAction%%inheritLevel% %permAction%%permLevel% %UserAssign%%depth%%access% /T /C
+icacls %folderPath% %inheritAction%%inheritLevel% %permAction%%permLevel% %UserAssign%%depth%%access% /C
 timeout /T 10 & exit
 
 :setowner
 echo Assigning ownership to %UserAssign%
-icacls %folderPath% %ownerAction% %UserAssign% /T /C
+icacls %folderPath% %ownerAction% %UserAssign% /C
 timeout /T 10 & exit
