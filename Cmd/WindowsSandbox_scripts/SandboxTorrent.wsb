@@ -1,0 +1,17 @@
+<Configuration>
+<VGpu>Default</VGpu>
+<Networking>Default</Networking>
+<MappedFolders>
+   <MappedFolder>
+     <HostFolder>%USERPROFILE%\Downloads</HostFolder>
+     <ReadOnly>false</ReadOnly>
+   </MappedFolder>
+   <MappedFolder>
+     <HostFolder>%USERPROFILE%\Documents\WindowsSandboxScripts</HostFolder>
+     <ReadOnly>true</ReadOnly>
+   </MappedFolder>
+</MappedFolders>
+<LogonCommand>
+   <Command>C:\Users\WDAGUtilityAccount\Desktop\WindowsSandboxScripts\InstallTransmission.cmd</Command>
+</LogonCommand>
+</Configuration>
