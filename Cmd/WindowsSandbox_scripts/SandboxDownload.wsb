@@ -1,0 +1,13 @@
+<Configuration>
+<VGpu>Default</VGpu>
+<Networking>Default</Networking>
+<MappedFolders>
+   <MappedFolder>
+     <HostFolder>%USERPROFILE%\Downloads</HostFolder>
+     <ReadOnly>false</ReadOnly>
+   </MappedFolder>
+</MappedFolders>
+<LogonCommand>
+   <Command>explorer.exe C:\Users\WDAGUtilityAccount\Desktop\Downloads</Command>
+</LogonCommand>
+</Configuration>
