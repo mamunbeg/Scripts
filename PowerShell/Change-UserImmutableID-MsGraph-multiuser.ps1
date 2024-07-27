@@ -102,4 +102,8 @@ do {
 } until ($response -eq 2)
 
 Write-Host "`nTotal number of users changed is $totalusers."
+
+# Sync changes to Azure (M365)
+Invoke-Command -ComputerName $DomainServer -ScriptBlock { Start-ADSyncSyncCycle -PolicyType Delta } -Credential $AdminCred
+
 Read-Host -Prompt "`nPress Enter to exit"
