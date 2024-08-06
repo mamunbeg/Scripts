@@ -35,7 +35,7 @@ do {
         # Immutable ID of account on new domain
         Write-Host "`nPlease wait, retrieving Domain Immutable ID details..."
         # Retrieve Immutable ID from new domain
-        $DomainGUID = [guid]((Get-ADUser -LdapFilter "(userPrincipalName=$userUPN)" -Credential $AdminCred -Server $DomainServer).objectGuid)
+        $DomainGUID = [guid]((Get-ADUser -LdapFilter "(userPrincipalName=$userUPN)" -Properties mS-DS-ConsistencyGUID -Credential $AdminCred -Server $DomainServer).'mS-DS-ConsistencyGUID')
         # Convert data format
         $DomainImmutableID = [System.Convert]::ToBase64String($DomainGUID.ToByteArray())
         # Output information with color
