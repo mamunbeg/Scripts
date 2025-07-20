@@ -5,9 +5,6 @@
 		},
 		{
 			"path": "../Testing"
-		},
-		{
-			"path": "../../../../../../../home/mamunbeg/ansible-playbooks"
 		}
 	],
 	"settings": {
