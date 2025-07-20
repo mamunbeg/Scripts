@@ -7,7 +7,7 @@
 			"path": "../Testing"
 		},
 		{
-			"path": "\\\\wsl.localhost\\Ubuntu\\home\\mamunbeg\\ansible-playbooks"
+			"path": "../../../../../../../home/mamunbeg/ansible-playbooks"
 		}
 	],
 	"settings": {
