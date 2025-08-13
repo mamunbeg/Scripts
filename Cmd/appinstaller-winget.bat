@@ -8,7 +8,7 @@ pushd "%~dp0"
 
 powershell Add-AppxPackage https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 
-winget install --id Microsoft.Office --scope machine --override "/configure ./configuration_OfficeProPlus-x64_capellan.xml"
+winget install --id Microsoft.Office --scope machine --override "/configure ./configuration_OfficeProPlus-x64.xml"
 winget install --id Microsoft.VCRedist.2015+.x64 --scope machine
 winget install --id Google.Drive --scope machine
 winget install --id Microsoft.RemoteDesktopClient --scope machine

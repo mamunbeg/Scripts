@@ -3,11 +3,12 @@
 <Networking>Default</Networking>
 <MappedFolders>
    <MappedFolder>
-     <HostFolder>%USERPROFILE%\Downloads</HostFolder>
+     <HostFolder>C:\Users\%USERNAME%\Downloads</HostFolder>
+     <SandboxFolder>C:\Users\WDAGUtilityAccount\Downloads</SandboxFolder>
      <ReadOnly>false</ReadOnly>
    </MappedFolder>
 </MappedFolders>
 <LogonCommand>
-   <Command>explorer.exe C:\Users\WDAGUtilityAccount\Desktop\Downloads</Command>
+   <Command>explorer.exe C:\Users\WDAGUtilityAccount\Downloads</Command>
 </LogonCommand>
 </Configuration>
