@@ -49,6 +49,25 @@ echo Importing device information into Windows Autopilot online...
 echo This may take a few minutes. Please wait...
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned; Install-Script -Name Get-WindowsAutopilotInfo -Force; Get-WindowsAutopilotInfo -Online"
 echo.
-REM Wait 5 minutes (300 seconds) then reboot
-echo AutoPilot import complete. Scheduling reboot in 5 minutes...
-shutdown /r /t 300 /c "System will reboot in 5 minutes after AutoPilot script execution."
+
+REM Prompt for reboot time
+echo.
+echo Select when to reboot:
+echo   1) 5 minutes (default)
+echo   2) 10 minutes
+echo   3) 15 minutes
+set /p choice="Enter your choice (1, 2, or 3), or press Enter for default: "
+
+set reboot_seconds=300
+
+if "%choice%"=="2" (
+    set reboot_seconds=600
+)
+if "%choice%"=="3" (
+    set reboot_seconds=900
+)
+
+set /a reboot_minutes=reboot_seconds/60
+
+echo AutoPilot import complete. Scheduling reboot in %reboot_minutes% minutes...
+shutdown /r /t %reboot_seconds% /c "System will reboot in %reboot_minutes% minutes after AutoPilot script execution."
